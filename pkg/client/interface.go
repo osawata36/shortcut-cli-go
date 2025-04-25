@@ -26,14 +26,20 @@ type Epic struct {
 
 // Story はStoryの情報を表す構造体です
 type Story struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	StoryType   string `json:"story_type"`
-	State       string `json:"workflow_state_id"`
-	EpicID      *int   `json:"epic_id,omitempty"`
-	CreatedAt   string `json:"created_at"`
-	UpdatedAt   string `json:"updated_at"`
+	ID            int    `json:"id"`
+	Name          string `json:"name"`
+	Description   string `json:"description"`
+	StoryType     string `json:"story_type"`
+	WorkflowState State  `json:"workflow_state"`
+	EpicID        *int   `json:"epic_id,omitempty"`
+	CreatedAt     string `json:"created_at"`
+	UpdatedAt     string `json:"updated_at"`
+}
+
+// State はワークフローの状態を表す構造体です
+type State struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
 // SearchEpicParams はEpic検索のパラメータを表す構造体です

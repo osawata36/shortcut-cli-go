@@ -178,28 +178,30 @@ func (c *clientImpl) SearchStories(ctx context.Context, params *SearchStoryParam
 		query.Set("query", params.Query)
 	}
 	if params.EpicID != 0 {
-		query.Set("epic", fmt.Sprintf("%d", params.EpicID))
+		query.Set("epic_id", fmt.Sprintf("%d", params.EpicID))
 	}
 	if params.State != "" {
-		query.Set("state", params.State)
+		query.Set("workflow_state_name", params.State)
 	}
 	if params.OwnerID != "" {
-		query.Set("owner", params.OwnerID)
+		query.Set("owner_id", params.OwnerID)
 	}
 	if params.StoryType != "" {
-		query.Set("type", params.StoryType)
+		query.Set("story_type", params.StoryType)
 	}
 	if params.CreatedAt != "" {
-		query.Set("created", params.CreatedAt)
+		query.Set("created_at", params.CreatedAt)
 	}
 	if params.UpdatedAt != "" {
-		query.Set("updated", params.UpdatedAt)
+		query.Set("updated_at", params.UpdatedAt)
 	}
 
 	body, err := c.doRequest(ctx, http.MethodGet, "/search/stories", query)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Printf("API Response: %s\n", string(body))
 
 	var stories []*Story
 	if err := json.Unmarshal(body, &stories); err != nil {

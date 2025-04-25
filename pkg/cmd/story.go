@@ -47,7 +47,7 @@ func newStoryGetCmd() *cobra.Command {
 			fmt.Printf("Name: %s\n", story.Name)
 			fmt.Printf("Description: %s\n", story.Description)
 			fmt.Printf("Type: %s\n", story.StoryType)
-			fmt.Printf("State: %s\n", story.State)
+			fmt.Printf("State: %s\n", story.WorkflowState.Name)
 			if story.EpicID != nil {
 				fmt.Printf("Epic ID: %d\n", *story.EpicID)
 			}
@@ -98,7 +98,7 @@ func newStorySearchCmd() *cobra.Command {
 			// 結果の表示
 			for _, story := range stories {
 				fmt.Printf("ID: %d, Name: %s, Type: %s, State: %s\n",
-					story.ID, story.Name, story.StoryType, story.State)
+					story.ID, story.Name, story.StoryType, story.WorkflowState.Name)
 			}
 
 			return nil
