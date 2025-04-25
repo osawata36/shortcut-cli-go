@@ -36,37 +36,72 @@ export SHORTCUT_API_TOKEN="your-api-token"
 
 ## 使い方
 
-### バージョン情報の表示
+### コマンド一覧
 
 ```bash
-shortcut-cli version
+shortcut-cli [command] [subcommand] [options]
 ```
 
-### Story検索
+利用可能なコマンド：
+- `version`: バージョン情報の表示
+- `epic`: Epic関連の操作
+- `story`: Story関連の操作
 
+### Epic関連のコマンド
+
+#### Epic一覧の取得
 ```bash
-shortcut-cli story search "検索キーワード"
+shortcut-cli epic list
+```
+
+#### Epic情報の参照
+```bash
+shortcut-cli epic get <epic-id>
+```
+
+#### Epic検索
+```bash
+shortcut-cli epic search [検索キーワード]
+```
+
+オプション：
+- `--state`: Epicの状態でフィルタ（unstarted/started/done）
+- `--owner`: オーナーでフィルタ
+- `--created`: 作成日でフィルタ（YYYY-MM-DD）
+- `--updated`: 更新日でフィルタ（YYYY-MM-DD）
+
+### Story関連のコマンド
+
+#### Story情報の参照
+```bash
+shortcut-cli story get <story-id>
+```
+
+#### Story検索
+```bash
+shortcut-cli story search [検索キーワード]
 ```
 
 オプション：
 - `--type`: ストーリータイプでフィルタ（feature/bug/chore）
 - `--state`: ストーリーの状態でフィルタ
 - `--epic`: Epic IDでフィルタ
-- `--owner`: オーナーIDでフィルタ
+- `--owner`: オーナーでフィルタ
 - `--created`: 作成日でフィルタ（YYYY-MM-DD）
 - `--updated`: 更新日でフィルタ（YYYY-MM-DD）
 
-### Epic情報の参照
+### 日付フィルタの書式
 
-```bash
-shortcut-cli epic get <epic-id>
-```
+日付フィルタ（`--created`、`--updated`）では以下の形式が使用可能です：
 
-### Story情報の参照
-
-```bash
-shortcut-cli story get <story-id>
-```
+- 特定の日付: `YYYY-MM-DD`
+- 相対的な日付: `today`、`yesterday`、`tomorrow`
+- 日付範囲:
+  - `YYYY-MM-DD..YYYY-MM-DD`: 指定期間
+  - `YYYY-MM-DD..*`: 指定日以降
+  - `*..YYYY-MM-DD`: 指定日以前
+  - `today..*`: 今日以降
+  - `*..today`: 今日以前
 
 ## 開発
 
