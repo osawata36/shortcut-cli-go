@@ -201,12 +201,10 @@ func (c *clientImpl) SearchStories(ctx context.Context, params *SearchStoryParam
 		return nil, err
 	}
 
-	fmt.Printf("API Response: %s\n", string(body))
-
-	var stories []*Story
-	if err := json.Unmarshal(body, &stories); err != nil {
+	var response SearchStoriesResponse
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, fmt.Errorf("unmarshal response: %w", err)
 	}
 
-	return stories, nil
+	return response.Data, nil
 }

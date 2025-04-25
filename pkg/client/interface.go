@@ -61,3 +61,9 @@ type SearchStoryParams struct {
 	CreatedAt string `json:"created,omitempty"`
 	UpdatedAt string `json:"updated,omitempty"`
 }
+
+// SearchStoriesResponse はストーリー検索APIのレスポンスを表す構造体
+type SearchStoriesResponse struct {
+	Next string   `json:"next"`
+	Data []*Story `json:"data"`
+}
