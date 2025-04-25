@@ -6,6 +6,9 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
+
+	"golang.org/x/time/rate"
 )
 
 // mockHTTPClient はテスト用のHTTPクライアントモックです
@@ -22,6 +25,15 @@ func mockResponse(statusCode int, body string) *http.Response {
 	return &http.Response{
 		StatusCode: statusCode,
 		Body:       io.NopCloser(strings.NewReader(body)),
+	}
+}
+
+// newTestClient はテスト用のクライアントを生成します
+func newTestClient(mock *mockHTTPClient) *clientImpl {
+	return &clientImpl{
+		httpClient:  mock,
+		apiToken:    "test-token",
+		rateLimiter: rate.NewLimiter(rate.Every(time.Minute/200), 1),
 	}
 }
 
@@ -64,10 +76,7 @@ func TestGetEpic(t *testing.T) {
 				},
 			}
 
-			client := &clientImpl{
-				httpClient: mock,
-				apiToken:   "test-token",
-			}
+			client := newTestClient(mock)
 
 			epic, err := client.GetEpic(context.Background(), tt.epicID)
 			if (err != nil) != tt.wantErr {
@@ -95,15 +104,20 @@ func TestSearchStories(t *testing.T) {
 			params: &SearchStoryParams{
 				Query: "test",
 			},
-			response: `[{
-				"id": 123,
-				"name": "Test Story",
-				"description": "Test Description",
-				"story_type": "feature",
-				"workflow_state_id": "in progress",
-				"created_at": "2024-01-01T00:00:00Z",
-				"updated_at": "2024-01-01T00:00:00Z"
-			}]`,
+			response: `{
+				"data": [{
+					"id": 123,
+					"name": "Test Story",
+					"description": "Test Description",
+					"story_type": "feature",
+					"workflow_state": {
+						"id": 1,
+						"name": "in progress"
+					},
+					"created_at": "2024-01-01T00:00:00Z",
+					"updated_at": "2024-01-01T00:00:00Z"
+				}]
+			}`,
 			statusCode: http.StatusOK,
 			wantErr:    false,
 		},
@@ -126,10 +140,7 @@ func TestSearchStories(t *testing.T) {
 				},
 			}
 
-			client := &clientImpl{
-				httpClient: mock,
-				apiToken:   "test-token",
-			}
+			client := newTestClient(mock)
 
 			stories, err := client.SearchStories(context.Background(), tt.params)
 			if (err != nil) != tt.wantErr {

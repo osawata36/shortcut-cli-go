@@ -84,9 +84,8 @@ func (c *clientImpl) doRequest(ctx context.Context, method, path string, query u
 	// ステータスコードの確認
 	if resp.StatusCode != http.StatusOK {
 		if resp.StatusCode == http.StatusTooManyRequests {
-			// レートリミットに達した場合は少し待ってリトライ
-			time.Sleep(time.Second)
-			return c.doRequest(ctx, method, path, query)
+			// レートリミットに達した場合はエラーを返す
+			return nil, fmt.Errorf("rate limit exceeded: %s", string(body))
 		}
 		return nil, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
 	}
@@ -172,28 +171,16 @@ func (c *clientImpl) GetStory(ctx context.Context, storyID int) (*Story, error) 
 }
 
 // SearchStories は条件に合うStoryを検索します
-func (c *clientImpl) SearchStories(ctx context.Context, params *SearchStoryParams) ([]*Story, error) {
+func (c *clientImpl) SearchStories(ctx context.Context, params *SearchStoriesParams) ([]*Story, error) {
 	query := url.Values{}
 	if params.Query != "" {
-		query.Set("query", params.Query)
-	}
-	if params.EpicID != 0 {
-		query.Set("epic_id", fmt.Sprintf("%d", params.EpicID))
+		query.Add("query", params.Query)
 	}
 	if params.State != "" {
-		query.Set("workflow_state_name", params.State)
+		query.Add("workflow_state", params.State)
 	}
-	if params.OwnerID != "" {
-		query.Set("owner_id", params.OwnerID)
-	}
-	if params.StoryType != "" {
-		query.Set("story_type", params.StoryType)
-	}
-	if params.CreatedAt != "" {
-		query.Set("created_at", params.CreatedAt)
-	}
-	if params.UpdatedAt != "" {
-		query.Set("updated_at", params.UpdatedAt)
+	if params.Owner != "" {
+		query.Add("owner", params.Owner)
 	}
 
 	body, err := c.doRequest(ctx, http.MethodGet, "/search/stories", query)
@@ -203,7 +190,7 @@ func (c *clientImpl) SearchStories(ctx context.Context, params *SearchStoryParam
 
 	var response SearchStoriesResponse
 	if err := json.Unmarshal(body, &response); err != nil {
-		return nil, fmt.Errorf("unmarshal response: %w", err)
+		return nil, err
 	}
 
 	return response.Data, nil

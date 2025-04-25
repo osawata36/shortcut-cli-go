@@ -67,3 +67,10 @@ type SearchStoriesResponse struct {
 	Next string   `json:"next"`
 	Data []*Story `json:"data"`
 }
+
+// SearchStoriesParams はストーリー検索のパラメータを表す構造体
+type SearchStoriesParams struct {
+	Query string
+	State string
+	Owner string
+}
