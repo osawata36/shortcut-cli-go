@@ -171,7 +171,7 @@ func (c *clientImpl) GetStory(ctx context.Context, storyID int) (*Story, error) 
 }
 
 // SearchStories は条件に合うStoryを検索します
-func (c *clientImpl) SearchStories(ctx context.Context, params *SearchStoriesParams) ([]*Story, error) {
+func (c *clientImpl) SearchStories(ctx context.Context, params *SearchStoryParams) ([]*Story, error) {
 	query := url.Values{}
 	if params.Query != "" {
 		query.Add("query", params.Query)
@@ -181,6 +181,18 @@ func (c *clientImpl) SearchStories(ctx context.Context, params *SearchStoriesPar
 	}
 	if params.Owner != "" {
 		query.Add("owner", params.Owner)
+	}
+	if params.EpicID != 0 {
+		query.Add("epic", fmt.Sprintf("%d", params.EpicID))
+	}
+	if params.StoryType != "" {
+		query.Add("type", params.StoryType)
+	}
+	if params.CreatedAt != "" {
+		query.Add("created", params.CreatedAt)
+	}
+	if params.UpdatedAt != "" {
+		query.Add("updated", params.UpdatedAt)
 	}
 
 	body, err := c.doRequest(ctx, http.MethodGet, "/search/stories", query)

@@ -54,9 +54,9 @@ type SearchEpicParams struct {
 // SearchStoryParams はStory検索のパラメータを表す構造体です
 type SearchStoryParams struct {
 	Query     string `json:"query,omitempty"`
+	State     string `json:"workflow_state,omitempty"`
+	Owner     string `json:"owner,omitempty"`
 	EpicID    int    `json:"epic,omitempty"`
-	State     string `json:"state,omitempty"`
-	OwnerID   string `json:"owner,omitempty"`
 	StoryType string `json:"type,omitempty"`
 	CreatedAt string `json:"created,omitempty"`
 	UpdatedAt string `json:"updated,omitempty"`
@@ -66,11 +66,4 @@ type SearchStoryParams struct {
 type SearchStoriesResponse struct {
 	Next string   `json:"next"`
 	Data []*Story `json:"data"`
-}
-
-// SearchStoriesParams はストーリー検索のパラメータを表す構造体
-type SearchStoriesParams struct {
-	Query string
-	State string
-	Owner string
 }
