@@ -16,6 +16,12 @@ ShortcutのAPIをコマンドラインから操作するためのCLIツールで
 go install github.com/osawata36/shortcut-cli-go/cmd/shortcut@latest
 ```
 
+または、ソースからビルド：
+
+```bash
+make install
+```
+
 ## 設定
 
 1. Shortcut APIトークンを取得します
@@ -30,22 +36,36 @@ export SHORTCUT_API_TOKEN="your-api-token"
 
 ## 使い方
 
+### バージョン情報の表示
+
+```bash
+shortcut-cli version
+```
+
 ### Story検索
 
 ```bash
-shortcut story search "検索キーワード"
+shortcut-cli story search "検索キーワード"
 ```
+
+オプション：
+- `--type`: ストーリータイプでフィルタ（feature/bug/chore）
+- `--state`: ストーリーの状態でフィルタ
+- `--epic`: Epic IDでフィルタ
+- `--owner`: オーナーIDでフィルタ
+- `--created`: 作成日でフィルタ（YYYY-MM-DD）
+- `--updated`: 更新日でフィルタ（YYYY-MM-DD）
 
 ### Epic情報の参照
 
 ```bash
-shortcut epic get <epic-id>
+shortcut-cli epic get <epic-id>
 ```
 
 ### Story情報の参照
 
 ```bash
-shortcut story get <story-id>
+shortcut-cli story get <story-id>
 ```
 
 ## 開発
@@ -53,18 +73,30 @@ shortcut story get <story-id>
 ### 必要条件
 
 - Go 1.21以上
+- Make
+- [golangci-lint](https://golangci-lint.run/) (自動インストール可能)
 
-### ビルド方法
+### ビルドコマンド
 
-```bash
-go build -o shortcut ./cmd/shortcut
-```
-
-### テスト実行
+以下のMakeコマンドが利用可能です：
 
 ```bash
-go test ./...
+make build      # バイナリのビルド
+make test       # テストの実行
+make lint       # リントの実行
+make clean      # ビルド成果物の削除
+make deps       # 依存関係の更新
+make all        # lint、test、buildを順番に実行
+make install    # バイナリのインストール
 ```
+
+### バージョン管理
+
+バイナリには以下の情報が含まれます：
+- バージョン番号（gitのタグまたはコミットハッシュ）
+- ビルド時刻
+
+これらの情報は `shortcut-cli version` コマンドで確認できます。
 
 ## ライセンス
 
